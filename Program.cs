@@ -36,7 +36,7 @@ while (iRetryCount < RetryMaxAttempts)
 {
     try
     {
-        Log($"Opening a DB connection to {builder.ConnectionString}");
+        Log($"Opening a DB connection to {builder.DataSource}");
         using var connection = new SqlConnection(builder.ConnectionString);
         connection.Open();
 

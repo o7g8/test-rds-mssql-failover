@@ -64,6 +64,114 @@ During a failover, when the primary replica changes, existing connections to the
 
 Therefore it's surprising we didn't get the downtime with Always On and the existing DB connection continued to work.  
 
+## Example results
+
+Started the resize (scale-up) at 12:12, the resize took ~25min. The down time hit between 12:36:04 - 12:36:07.
+
+* RDS endpoint:
+
+Downtime b/w 12:36:05-12:36:08 = 3sec
+
+```text
+12/2/2022 12:36:04 AM : RDS Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:05 AM : RDS Starting a query...
+12/2/2022 12:36:05 AM : RDS ERROR: SHUTDOWN is in progress., retry #1
+12/2/2022 12:36:06 AM : RDS Opening a DB connection to xxxxx
+12/2/2022 12:36:06 AM : RDS Starting a query...
+12/2/2022 12:36:06 AM : RDS ERROR: SHUTDOWN is in progress.
+Login failed for user 'admin'.
+Cannot continue the execution because the session is in the kill state.
+A severe error occurred on the current command.  The results, if any, should be discarded., retry #2
+12/2/2022 12:36:07 AM : RDS Opening a DB connection to xxxxxx
+12/2/2022 12:36:08 AM : RDS Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+```
+
+* Always On Listener Endpoint:
+
+WARNING: The first time the client was able to connect to the DB after 5-8 attempts.
+
+No downtime between 12:36:04 - 12:36:08 and in the rest of logs.
+
+```text
+12/2/2022 12:36:04 AM : AG Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:05 AM : AG Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:06 AM : AG Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:07 AM : AG Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:08 AM : AG Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+```
+
+* RDS Proxy:
+
+No downtime between 12:36:04 - 12:36:08 and in the rest of logs.
+
+```text
+12/2/2022 12:36:04 AM : PROXY Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:05 AM : PROXY Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:06 AM : PROXY Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:07 AM : PROXY Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+12/2/2022 12:36:08 AM : PROXY Starting a query...
+master SQL_Latin1_General_CP1_CI_AS
+tempdb SQL_Latin1_General_CP1_CI_AS
+model SQL_Latin1_General_CP1_CI_AS
+msdb SQL_Latin1_General_CP1_CI_AS
+rdsadmin SQL_Latin1_General_CP1_CI_AS
+```
+
 ## Build
 
 Install .NET Core 6 (or better) following a guide for your OS, e.g. <https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu>
