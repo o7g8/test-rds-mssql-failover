@@ -56,6 +56,14 @@ I resized my instance from `db.m6i.large` to `db.m6i.xlarge` (the operation took
 
 * RDS Proxy endpoint: no downtime.
 
+NOTE: according to <https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/listeners-client-connectivity-application-failover?view=sql-server-ver16>
+
+```text
+During a failover, when the primary replica changes, existing connections to the listener are disconnected and new connections are routed to the new primary replica.
+```
+
+Therefore it's surprising we didn't get the downtime with Always On and the existing DB connection continued to work.  
+
 ## Build
 
 Install .NET Core 6 (or better) following a guide for your OS, e.g. <https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu>
@@ -107,3 +115,15 @@ dotnet build
 * VPC security group: Create new. NB! You will need to edit the security group associated with the RDS instance to allow traffic from your EC2 instance running the "downtime detection" tool.
 
 * Create an RDS Proxy: Yes
+
+## References
+
+* MS SQL Always-ON <https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/overview-of-always-on-availability-groups-sql-server?view=sql-server-ver16>
+
+* Always ON listener <https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/listeners-client-connectivity-application-failover?view=sql-server-ver16>
+
+Some pieces of the code are borrowed from the following sources:
+
+* <https://learn.microsoft.com/en-us/azure/azure-sql/database/connect-query-dotnet-core?view=azuresql>
+
+* <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_SQLServerMultiAZ.html>
