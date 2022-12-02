@@ -14,13 +14,13 @@ dotnet tool -- -e <db-endpoint> -u <username> -p <password> -l <label>
 
 To assess the DB availability via different endpoints run the tool against RDS endpoint, Always-ON listener endpoint, and RDS Proxy endpoint in separate terminal windows:
 
-* via RDS endpoint:
+* via *RDS endpoint*:
 
 ```bash
 dotnet tool -- -e <db-endpoint> -u <username> -p <password> -l RDS
 ```
 
-* via Always-ON listener endpoint:
+* via *Always-ON listener endpoint*:
 
 ```bash
 dotnet tool -- -e <db-endpoint> -u <username> -p <password> -l AlwaysON
@@ -28,7 +28,7 @@ dotnet tool -- -e <db-endpoint> -u <username> -p <password> -l AlwaysON
 
 NOTE: first time it took 5-7 connection retires till the tool was able to connect to the Always-ON listener in my case. Thereafter the tool connected to the endpoint instantaneously.
 
-* via RDS Proxy endpoint:
+* via *RDS Proxy endpoint*:
 
 ```bash
 dotnet tool -- -e <db-endpoint> -u <username> -p <password> -l RDSProxy
